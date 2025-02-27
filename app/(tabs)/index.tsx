@@ -1,74 +1,89 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+"use client"
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { useState, useEffect, useRef } from "react"
+import { StatusBar, SafeAreaView, KeyboardAvoidingView, Platform, type FlatList } from "react-native"
+import styled from "styled-components/native"
+import { ChatHeader } from "@/components/ui/ChatHeader"
+import { MessageBubble } from "@/components/ui/MessageBubble"
+import { ChatInput } from "@/components/ui/ChatInput"
+import { useWebSocket } from "@/hooks/useWebSocket"
+import type { Message } from "@/types/uiTypes"
 
-export default function HomeScreen() {
+export default function App() {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [inputText, setInputText] = useState("")
+  const flatListRef = useRef<FlatList>(null)
+
+  // Replace with your actual WebSocket server URL
+  const { connected, sendMessage, lastMessage } = useWebSocket("wss://echo.websocket.org")
+
+  useEffect(() => {
+    if (lastMessage) {
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        text: lastMessage,
+        sender: "other",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, newMessage])
+    }
+  }, [lastMessage])
+
+  const handleSend = () => {
+    if (inputText.trim() === "") return
+
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      text: inputText,
+      sender: "me",
+      timestamp: new Date(),
+    }
+
+    setMessages((prev) => [...prev, newMessage])
+    sendMessage(inputText)
+    setInputText("")
+  }
+
+  useEffect(() => {
+    // Scroll to bottom when messages change
+    if (flatListRef.current) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true })
+      }, 100)
+    }
+  }, [messages])
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <Container>
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <ChatHeader connected={connected} />
+
+        <MessageList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <MessageBubble message={item} />}
+          contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 10 }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Funciono!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        >
+          <ChatInput value={inputText} onChangeText={setInputText} onSend={handleSend} disabled={!connected} />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </Container>
+  )
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+const Container = styled.View`
+  flex: 1;
+  background-color: #121212;
+`
+
+const MessageList = styled.FlatList`
+  flex: 1;
+` as unknown as typeof FlatList
+
