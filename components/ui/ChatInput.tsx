@@ -1,34 +1,33 @@
 import type React from "react"
 import styled from "styled-components/native"
 import { SendIcon } from "./Icons"
-import { DefaultTheme } from "styled-components"
+import { ButtonProps } from "@/types/props"
 
 interface ChatInputProps {
-    value: string
-    onChangeText: (text: string) => void
-    onSend: () => void
-    disabled: boolean
+  value: string
+  onChangeText: (text: string) => void
+  onSend: () => void
+  disabled: boolean
 }
 
-type SendButtonProps = { disabled: boolean } & { theme: DefaultTheme };
 
 export const ChatInput: React.FC<ChatInputProps> = ({ value, onChangeText, onSend, disabled }) => {
-    return (
-        <InputContainer>
-            <StyledTextInput
-                value={value}
-                onChangeText={onChangeText}
-                placeholder="Type a message..."
-                placeholderTextColor="#999"
-                multiline
-                maxHeight={100}
-                editable={!disabled}
-            />
-            <SendButton onPress={onSend} disabled={disabled || value.trim() === ""}>
-                <SendIcon size={24} color={disabled || value.trim() === "" ? "#555" : "#0084ff"} />
-            </SendButton>
-        </InputContainer>
-    )
+  return (
+    <InputContainer>
+      <StyledTextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder="Type a message..."
+        placeholderTextColor="#999"
+        multiline
+        maxHeight={100}
+        editable={!disabled}
+      />
+      <SendButton onPress={onSend} disabled={disabled || value.trim() === ""}>
+        <SendIcon size={24} color={disabled || value.trim() === "" ? "#555" : "#0084ff"} />
+      </SendButton>
+    </InputContainer>
+  )
 }
 
 const InputContainer = styled.View`
@@ -56,8 +55,8 @@ const SendButton = styled.TouchableOpacity<{ disabled: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: ${(props: SendButtonProps) => props.disabled ? "#222" : "#222"};
+  background-color: ${(props: ButtonProps) => props.disabled ? "#222" : "#222"};
   justify-content: center;
   align-items: center;
-  opacity: ${(props: SendButtonProps) => props.disabled ? 0.5 : 1};
+  opacity: ${(props: ButtonProps) => props.disabled ? 0.5 : 1};
 `
