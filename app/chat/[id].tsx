@@ -67,7 +67,7 @@ export default function ChatRoomScreen() {
     // Handle logout with proper navigation
     const handleLogout = () => {
         logout();
-        router.replace('/login' as never);
+        router.replace('/login');
     }
 
     // Handle back button to return to chat list

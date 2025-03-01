@@ -51,7 +51,7 @@ export default function ChatScreen() {
     // Handle logout with proper navigation
     const handleLogout = () => {
         logout();
-        router.replace('/login' as never);
+        router.replace('/login');
     }
 
     useEffect(() => {// Scroll to bottom when messages change
