@@ -1,17 +1,36 @@
-import type React from "react"
-import styled from "styled-components/native"
-import { SendIcon } from "./Icons"
-import { ButtonProps } from "@/types/props"
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components/native';
+import { SendIcon } from '@/components/ui/Icons';
+import { ButtonProps } from '@/types/props';
 
 interface ChatInputProps {
-  value: string
-  onChangeText: (text: string) => void
-  onSend: () => void
-  disabled: boolean
+  value: string;
+  onChangeText: (text: string) => void;
+  onSend: () => void;
+  disabled?: boolean;
+  onTyping?: () => void;
 }
 
+export const ChatInput: React.FC<ChatInputProps> = ({
+  value,
+  onChangeText,
+  onSend,
+  disabled = false,
+  onTyping
+}) => {
+  // Debounce typing events
+  useEffect(() => {
+    if (value && onTyping) {
+      onTyping();
+    }
+  }, [value, onTyping]);
 
-export const ChatInput: React.FC<ChatInputProps> = ({ value, onChangeText, onSend, disabled }) => {
+  const handleSend = () => {
+    if (value.trim() && !disabled) {
+      onSend();
+    }
+  };
+
   return (
     <InputContainer>
       <StyledTextInput
@@ -20,15 +39,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({ value, onChangeText, onSen
         placeholder="Type a message..."
         placeholderTextColor="#999"
         multiline
-        maxHeight={100}
-        editable={!disabled}
       />
-      <SendButton onPress={onSend} disabled={disabled || value.trim() === ""}>
-        <SendIcon size={24} color={disabled || value.trim() === "" ? "#555" : "#0084ff"} />
+      <SendButton onPress={handleSend} disabled={disabled || !value.trim()}>
+        <SendIcon size={24} color={value.trim() ? "#0084ff" : "#666"} />
       </SendButton>
     </InputContainer>
-  )
-}
+  );
+};
 
 const InputContainer = styled.View`
   flex-direction: row;

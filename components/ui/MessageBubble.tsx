@@ -2,31 +2,38 @@ import type React from "react"
 import styled from "styled-components/native"
 import type { Message } from "@/types/uiTypes"
 import { DefaultTheme } from "styled-components"
+import { useAuth } from "@/context/AuthContext"
 
 interface MessageBubbleProps {
-    message: Message
+  message: Message
 }
 
 type MessageProps = {
-    isMyMessage: boolean
+  isMyMessage: boolean
 } & { theme: DefaultTheme }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
-    const isMyMessage = message.sender === "me"
-    const formattedTime = formatTime(message.timestamp)
+  const { user } = useAuth()
+  const formattedTime = formatTime(message.sent_at)
+  const isMyMessage = message.sender.id === user?.id
 
-    return (
-        <BubbleContainer isMyMessage={isMyMessage}>
-            <BubbleContent isMyMessage={isMyMessage}>
-                <MessageText isMyMessage={isMyMessage}>{message.text}</MessageText>
-                <TimeText isMyMessage={isMyMessage}>{formattedTime}</TimeText>
-            </BubbleContent>
-        </BubbleContainer>
-    )
+  return (
+    <BubbleContainer isMyMessage={isMyMessage}>
+      <BubbleContent isMyMessage={isMyMessage}>
+        <MessageText isMyMessage={isMyMessage}>{message.content}</MessageText>
+        <TimeText isMyMessage={isMyMessage}>{formattedTime} - {message.status}</TimeText>
+      </BubbleContent>
+    </BubbleContainer>
+  )
 }
 
-const formatTime = (date: Date): string => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+const formatTime = (date: string): string => {
+  const dateObj = new Date(date)
+  // Validate if dateObj is a valid date
+  if (isNaN(dateObj.getTime())) {
+    return ""
+  }
+  return dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
 }
 
 const BubbleContainer = styled.View<{ isMyMessage: boolean }>`
