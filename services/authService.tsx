@@ -3,7 +3,8 @@ import type { User } from "@/types/uiTypes";
 
 interface LoginResponse {
   user: User;
-  token: string;
+  access: string;
+  refresh: string;
 }
 
 interface RegisterResponse {
@@ -17,7 +18,7 @@ interface LogoutResponse {
 const authService = {
   async login(username: string, password: string): Promise<User> {
     const { data, error, status } = await api.post<LoginResponse>(
-      "/auth/login/",
+      "/api/auth/login/",
       {
         username,
         password,
@@ -31,7 +32,7 @@ const authService = {
     // Add token to user object for easier access
     const user: User = {
       ...data.user,
-      token: data.token,
+      token: data.access,
     };
 
     return user;
@@ -43,7 +44,7 @@ const authService = {
     password: string
   ): Promise<boolean> {
     const { error, status } = await api.post<RegisterResponse>(
-      "/auth/register/",
+      "/api/auth/register/",
       {
         username,
         email,
@@ -72,7 +73,7 @@ const authService = {
     profileData: Partial<User>
   ): Promise<User> {
     const { data, error, status } = await api.put<User>(
-      `/users/${userId}/profile/`,
+      `/api/users/${userId}/profile/`,
       profileData
     );
 
@@ -103,7 +104,7 @@ const authService = {
 
     const { data, error, status } = await api.uploadFormData<{
       imageUrl: string;
-    }>(`/users/${userId}/profile-image/`, formData);
+    }>(`/api/users/${userId}/profile-image/`, formData);
 
     if (error || status !== 200) {
       throw new Error(error || "Image upload failed");

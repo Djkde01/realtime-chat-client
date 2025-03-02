@@ -6,6 +6,9 @@ interface ApiResponse<T = any> {
   status: number;
 }
 
+type QueryParams = Record<string, string | number | boolean>;
+
+
 class ApiClient {
   private baseUrl: string;
 
@@ -28,10 +31,22 @@ class ApiClient {
     return headers;
   }
 
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, options?: { params?: QueryParams }): Promise<ApiResponse<T>> {
     try {
       const headers = await this.getHeaders();
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+
+      // Build URL with query params if provided
+      let url = `${this.baseUrl}${endpoint}`;
+
+      if (options?.params) {
+        const queryParams = new URLSearchParams();
+        Object.entries(options.params).forEach(([key, value]) => {
+          queryParams.append(key, String(value));
+        });
+        url += `?${queryParams.toString()}`;
+      }
+
+      const response = await fetch(url, {
         method: "GET",
         headers,
       });
@@ -59,6 +74,7 @@ class ApiClient {
   async post<T>(endpoint: string, body: any): Promise<ApiResponse<T>> {
     try {
       const headers = await this.getHeaders();
+
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
         headers,
@@ -66,7 +82,6 @@ class ApiClient {
       });
 
       const data = await response.json();
-      console.log("🚀 ~ ApiClient ~ data:", data)
 
 
       if (!response.ok) {
