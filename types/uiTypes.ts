@@ -6,9 +6,50 @@ export interface User {
   token?: string;
 }
 
+export interface ChatParticipant {
+  id: string;
+  userId: string;
+  username: string;
+  profileImage?: string;
+  lastSeen?: Date;
+  isOnline?: boolean;
+}
+
 export interface Message {
   id: string;
-  text: string;
-  sender: string; // "me" | "other" | "system"
-  timestamp: Date;
+  chat: string;
+  content: string;
+  sent_at: string;
+  status: MessageStatus;
+  sender: {
+    id: string;
+    username: string;
+    profile_img?: string;
+  };
+  isFromCurrentUser?: boolean;
 }
+
+export interface Chat {
+  id: string;
+  name: string;
+  participants: ChatParticipant[];
+  lastMessage?: Message;
+  createdAt: Date;
+  updatedAt: Date;
+  unreadCount?: number;
+  isGroup: boolean;
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  avatar: string;
+  status: string;
+}
+
+export type MessageStatus =
+  | "sending"
+  | "sent"
+  | "delivered"
+  | "read"
+  | "failed";
