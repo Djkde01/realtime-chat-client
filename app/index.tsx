@@ -12,7 +12,7 @@ export default function IndexPage() {
         // This acts as a splash/routing page
         if (!loading) {
             if (user) {
-                router.replace('/chat');
+                router.replace('/(main)/chat' as never);
             } else {
                 router.replace('/login');
             }
