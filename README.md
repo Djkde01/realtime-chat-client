@@ -1,50 +1,139 @@
-# Welcome to your Expo app 👋
+# Besage Chat - Real-time Messaging App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, real-time messaging application built with React Native and Expo. This project implements a complete chat solution with real-time messaging using WebSockets, user authentication, and a responsive UI.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Real-time Messaging:** Instant message delivery using WebSockets
+- **User Authentication:** Secure login and registration
+- **Contact Management:** View and select contacts to chat with
+- **Group Chats:** Create multi-participant conversations
+- **Message Status:** Read receipts and delivery confirmations
+- **Typing Indicators:** See when others are typing
+- **Offline Message Caching:** View messages even without connection
 
-   ```bash
-   npm install
-   ```
+## Architecture
 
-2. Start the app
+The application follows a modular architecture with the following key components:
 
-   ```bash
-    npx expo start
-   ```
+- **Frontend**: React Native with Expo
+- **Navigation**: Expo Router for type-safe navigation
+- **State Management**: React Hooks and Context API
+- **Styling**: Styled Components
+- **Real-time Communication**: WebSocket API
+- **Backend**: REST API with WebSocket support
 
-In the output, you'll find options to open the app in a
+## Modules
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Authentication**: User registration and login
+- **Contacts**: User list and contact management
+- **Chat**: Real-time messaging and chat history
+- **Profile**: User profile and settings
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Requirements
 
-## Get a fresh project
+- Node.js 16.x or higher
+- npm or yarn
+- Expo CLI
+- iOS or Android device/emulator
 
-When you're ready, run:
+## Installation
+
+1. Clone the repository:
 
 ```bash
-npm run reset-project
+git clone https://github.com/yourusername/besage-chat.git
+cd besage-chat
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies
 
-## Learn more
+```bash
+npm install
+# or
+yarn install
 
-To learn more about developing your project with Expo, look at the following resources:
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Configuration
 
-## Join the community
+1. Create a `.env` file in the project root with the following variables:
 
-Join our community of developers creating universal apps.
+```bash
+EXPO_PUBLIC_API_URL=https://your-backend-api.com
+EXPO_PUBLIC_CDN_URL=https://your-cdn-url.com
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Running the App
+
+1. Start the development server:
+
+```bash
+npx expo start
+```
+
+2)Use the Expo Go app on your device to scan the QR code, or press:
+
+- `a` to open on Android emulator
+- `i` to open on iOS simulator
+- `w` to open in web browser
+
+## Development
+
+### Directory Structure
+
+```bash
+besage-chat/
+│
+├── app/                      # Application screens using expo-router
+│   ├── (auth)/               # Authentication-related screens
+│   ├── (main)/               # Main app screens
+│   │   ├── (contacts)/       # Contacts-related screens
+│   │   └── chat/             # Chat-related screens
+│   └── _layout.tsx           # Root layout
+│
+├── assets/                   # Static assets
+│   ├── fonts/
+│   └── images/
+│
+├── components/               # Reusable UI components
+│   └── ui/
+│
+├── context/                  # React context providers
+│   └── AuthContext.tsx
+│
+├── hooks/                    # Custom React hooks
+│   ├── useAuth.ts
+│   ├── useChat.ts
+│   ├── useChats.ts
+│   └── useContacts.ts
+│
+├── services/                 # API and service layer
+│   ├── apiClient.tsx
+│   ├── chatService.ts
+│   └── webSocketService.ts
+│
+├── types/                    # TypeScript type definitions
+│   └── uiTypes.ts
+│
+└── utils/                    # Helper utilities
+    └── env.ts
+
+```
+
+## Troubleshooting
+
+- **"Welcome to Expo" screen**: Make sure you've properly configured the Expo Router
+- **WebSocket connection issues**: Verify your backend URL and authentication token
+- **TypeScript errors with routes**: Use the navigation helper or type assertions
+
+## Backend Requirements
+
+This front-end application requires a backend service that provides:
+
+1. REST API for user authentication, chat creation, and message history
+2. WebSocket support for real-time messaging
+
+## License
+
+MIT License
