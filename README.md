@@ -36,13 +36,16 @@ The application follows a modular architecture with the following key components
 - npm or yarn
 - Expo CLI
 - iOS or Android device/emulator
+- Running instances of backend API and CDN services
+  - Repo of the [Backend API](https://github.com/Djkde01/realtime-chat-back)
+  - Repo of the [CDN Service](https://github.com/Djkde01/realtime-chat-cdn)
 
 ## Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/besage-chat.git
+git clone git@github.com:Djkde01/realtime-chat-client.git
 cd besage-chat
 ```
 
@@ -57,22 +60,23 @@ yarn install
 
 ## Configuration
 
-1. Create a `.env` file in the project root with the following variables:
+1. Create a `.env` file in the project root with the URLs of the API and CDN:
 
 ```bash
-EXPO_PUBLIC_API_URL=https://your-backend-api.com
-EXPO_PUBLIC_CDN_URL=https://your-cdn-url.com
+EXPO_PUBLIC_API_URL=http://your-backend-api
+EXPO_PUBLIC_CDN_URL=http://your-cdn-url
 ```
 
 ## Running the App
 
-1. Start the development server:
+1. Ensure both backend API and CDN services are running
+2. Start the development server:
 
 ```bash
 npx expo start
 ```
 
-2)Use the Expo Go app on your device to scan the QR code, or press:
+3. Use the Expo Go app on your device to scan the QR code, or press:
 
 - `a` to open on Android emulator
 - `i` to open on iOS simulator
